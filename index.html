@@ -140,46 +140,46 @@
     position:relative;
   }
 
-  .astrolabe{
-    position:relative;
-    width:min(74vw, 460px);
-    margin:0 auto 8px;
+  .hero-bg{
+    position:absolute; inset:0; z-index:0;
+    overflow:hidden;
+    opacity:0;
+    animation:heroBgIn 2.4s ease forwards;
   }
-  .astrolabe svg{width:100%; height:auto; overflow:visible;}
-  .astrolabe-ring{
-    fill:none; stroke:rgba(184,134,62,0.35); stroke-width:0.6; stroke-dasharray:2 7;
-    transform-origin:200px 200px;
-    animation:spin 90s linear infinite;
+  .hero-bg img{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover; object-position:center 38%;
+    transform-origin:center 38%;
+    animation:kenburns 28s ease-in-out infinite alternate;
+    filter:saturate(1.05) contrast(1.03) brightness(0.94);
+    will-change:transform;
   }
-  .astrolabe-pentagram{
-    fill:none; stroke:var(--brass-bright); stroke-width:1.1;
-    stroke-dasharray:900; stroke-dashoffset:900;
-    animation:draw 2.6s cubic-bezier(.65,0,.35,1) forwards; animation-delay:0.3s;
+  .hero-bg-overlay{
+    position:absolute; inset:0; z-index:1;
+    background:
+      linear-gradient(180deg, rgba(7,8,11,0.4) 0%, rgba(7,8,11,0.16) 24%, rgba(7,8,11,0.6) 64%, var(--ink) 97%),
+      radial-gradient(ellipse at 50% 36%, rgba(7,8,11,0.02), rgba(7,8,11,0.55) 74%);
   }
-  .astrolabe-core{
-    fill:none; stroke:var(--brass); stroke-width:0.8; opacity:0;
-    animation:fadeIn 1s ease forwards; animation-delay:2.6s;
+  @keyframes heroBgIn{ to{ opacity:1; } }
+  @keyframes kenburns{
+    from{ transform:scale(1.0); }
+    to{ transform:scale(1.09); }
   }
-  .astrolabe-node circle.node-hit{fill:transparent;}
-  .astrolabe-node circle.node-dot{
-    fill:var(--ink); stroke:var(--brass-bright); stroke-width:1.6;
-    opacity:0; transform-origin:center;
-    animation:popIn 0.6s cubic-bezier(.34,1.56,.64,1) forwards;
+  @media (max-width:760px){
+    .hero-bg img{ object-position:center 30%; transform-origin:center 30%; }
+    .hero-bg-overlay{
+      background:
+        linear-gradient(180deg, rgba(7,8,11,0.55) 0%, rgba(7,8,11,0.22) 22%, rgba(7,8,11,0.55) 58%, var(--ink) 92%),
+        radial-gradient(ellipse at 50% 32%, rgba(7,8,11,0.05), rgba(7,8,11,0.55) 78%);
+    }
   }
-  .astrolabe-node text{
-    font-family:'IBM Plex Mono', monospace; font-size:9px; letter-spacing:0.06em;
-    fill:var(--muted); opacity:0;
-    animation:fadeIn 0.8s ease forwards;
-  }
-  .astrolabe-node{cursor:pointer;}
-  .astrolabe-node:hover circle.node-dot{fill:var(--brass-bright); filter:drop-shadow(0 0 8px rgba(232,184,92,0.7));}
-  .astrolabe-node:hover text{fill:var(--brass-bright);}
-  @keyframes draw{ to{ stroke-dashoffset:0; } }
-  @keyframes fadeIn{ to{ opacity:1; } }
-  @keyframes popIn{ to{ opacity:1; transform:scale(1); } from{ transform:scale(0);} }
-  @keyframes spin{ to{ transform:rotate(360deg); } }
 
-  .hero-content{position:relative; z-index:1; max-width:780px;}
+  .hero-content{position:relative; z-index:2; max-width:820px;}
+  .hero-content .hero-kicker,
+  .hero-content .verse-arabic,
+  .hero-content .verse-en,
+  .hero-content .verse-ref{ text-shadow:0 2px 20px rgba(0,0,0,0.6); }
 
   .hero-kicker{
     opacity:0; animation:fadeUp 1s ease forwards; animation-delay:0.2s;
@@ -236,6 +236,7 @@
 
   .scroll-cue{
     position:absolute; bottom:34px; left:50%; transform:translateX(-50%);
+    z-index:2;
     font-family:'IBM Plex Mono', monospace;
     font-size:10.5px; letter-spacing:0.2em; text-transform:uppercase;
     color:var(--muted);
@@ -459,9 +460,8 @@
 
   @media (prefers-reduced-motion: reduce){
     *{animation-duration:0.01ms !important; animation-delay:0s !important; transition-duration:0.01ms !important;}
-    .astrolabe-pentagram{stroke-dashoffset:0;}
-    .astrolabe-node circle.node-dot, .astrolabe-node text, .astrolabe-core{opacity:1;}
-    .hero-kicker,.verse-arabic,.verse-en,.verse-ref,.author-name,.author-tagline,.scroll-cue{opacity:1;}
+    .hero-kicker,.verse-arabic,.verse-en,.verse-ref,.author-name,.author-tagline,.scroll-cue,.hero-bg{opacity:1;}
+    .hero-bg img{transform:scale(1.08);}
     .ambient-glow{display:none;}
   }
 </style>
@@ -488,50 +488,10 @@
 
   <!-- ============ HERO ============ -->
   <section class="hero">
-    <div class="astrolabe">
-      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-        <circle class="astrolabe-ring" cx="200" cy="200" r="178"/>
-        <circle class="astrolabe-ring" cx="200" cy="200" r="150" style="animation-direction:reverse; animation-duration:70s;"/>
-        <polygon class="astrolabe-core" points="200,176 208,192 226,192 212,203 217,220 200,210 183,220 188,203 174,192 192,192" transform="translate(0,0)"/>
-        <path class="astrolabe-pentagram" d="M200,50 L288.2,321.4 L57.4,153.7 L342.6,153.7 L111.8,321.4 Z"/>
-
-        <a href="#book-1" aria-label="2026 — Mathematics of Creativity">
-          <g class="astrolabe-node" style="animation-delay:0s;">
-            <circle class="node-hit" cx="200" cy="50" r="20"/>
-            <circle class="node-dot" cx="200" cy="50" r="6" style="animation-delay:2.7s;"/>
-            <text x="200" y="34" text-anchor="middle" style="animation-delay:3.3s;">I</text>
-          </g>
-        </a>
-        <a href="#book-2" aria-label="2025 — The Divine Way">
-          <g class="astrolabe-node">
-            <circle class="node-hit" cx="342.6" cy="153.7" r="20"/>
-            <circle class="node-dot" cx="342.6" cy="153.7" r="6" style="animation-delay:2.85s;"/>
-            <text x="360" y="150" text-anchor="start" style="animation-delay:3.4s;">II</text>
-          </g>
-        </a>
-        <a href="#book-3" aria-label="2024 — The Pattern">
-          <g class="astrolabe-node">
-            <circle class="node-hit" cx="288.2" cy="321.4" r="20"/>
-            <circle class="node-dot" cx="288.2" cy="321.4" r="6" style="animation-delay:3s;"/>
-            <text x="298" y="342" text-anchor="middle" style="animation-delay:3.5s;">III</text>
-          </g>
-        </a>
-        <a href="#book-4" aria-label="2025 — The Reflection Letters">
-          <g class="astrolabe-node">
-            <circle class="node-hit" cx="111.8" cy="321.4" r="20"/>
-            <circle class="node-dot" cx="111.8" cy="321.4" r="6" style="animation-delay:3.15s;"/>
-            <text x="102" y="342" text-anchor="middle" style="animation-delay:3.6s;">IV</text>
-          </g>
-        </a>
-        <a href="#book-5" aria-label="2026 — DUAS">
-          <g class="astrolabe-node">
-            <circle class="node-hit" cx="57.4" cy="153.7" r="20"/>
-            <circle class="node-dot" cx="57.4" cy="153.7" r="6" style="animation-delay:3.3s;"/>
-            <text x="40" y="150" text-anchor="end" style="animation-delay:3.7s;">V</text>
-          </g>
-        </a>
-      </svg>
+    <div class="hero-bg">
+      <img src="hero-library.jpg" alt="An open-air library woven into golden reeds at sunset, its shelves wrapped in trailing greenery and sheer curtains">
     </div>
+    <div class="hero-bg-overlay"></div>
 
     <div class="hero-content">
       <div class="eyebrow hero-kicker">In the Name of Allah—the Most Compassionate, Most Merciful.</div>
@@ -738,6 +698,24 @@ He is Allāh , other than whom there is no deity, the Sovereign, the Pure, the P
   makeStars();
   drawStars();
   window.addEventListener('resize', () => { resize(); makeStars(); });
+
+  // ---------- Hero parallax ----------
+  const heroBg = document.querySelector('.hero-bg');
+  const heroSection = document.querySelector('.hero');
+  if(heroBg && !reduceMotion){
+    let pTicking = false;
+    function updateParallax(){
+      const rect = heroSection.getBoundingClientRect();
+      if(rect.bottom > 0){
+        heroBg.style.transform = `translate3d(0, ${rect.top * -0.18}px, 0)`;
+      }
+      pTicking = false;
+    }
+    window.addEventListener('scroll', ()=>{
+      if(!pTicking){ requestAnimationFrame(updateParallax); pTicking = true; }
+    }, {passive:true});
+    updateParallax();
+  }
 
   // ---------- Sign glyphs (n-point stars) ----------
   function buildStar(points, outerR, innerR, cx, cy){
